@@ -214,39 +214,24 @@ function saveBookmark(hikeDocID) {
 
 //--------------------------------------------------------------------------------------
 // This function updates the bookmarks array
-// 1. If it is hollow, makes it solid, then adds this hike to user's "bookmarks" array
-// 2. If it is solid, makes it hollow, then removes this hike from user's "bookmarks" array
+// 1. If it is hollow, make it solid, add this hike to user's "bookmarks" array
+// 2. If it is solid, make it hollow, remove this hike from user's "bookmarks" array
 //--------------------------------------------------------------------------------------
 function updateBookmark(hikeDocID) {
-    alert("inside update bookmark");
-    currentUser.get().then(doc => {
-        console.log(doc.data().bookmarks);
-        let currentBookmarks = doc.data().bookmarks;
 
-        if (currentBookmarks && currentBookmarks.includes(hikeDocID)) {
-            console.log(hikeDocID);
-            currentUser.update({
-                bookmarks: firebase.firestore.FieldValue.arrayRemove(hikeDocID)
-            })
-            .then(function() {
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            });
-        } else {
-            currentUser.set({
-                bookmarks: firebase.firestore.FieldValue.arrayUnion(hikeDocID)
-            }, 
-            {
-                merge: true
-            })
-            .then(function(){
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            })
-        }
+    // Manage the backend process to store the hikeDocID in the database, recording which hike was bookmarked by the user.
+    currentUser.update({
+        // Use 'arrayUnion' to add the new bookmark ID to the 'bookmarks' array.
+        // This method ensures that the ID is added only if it's not already present, preventing duplicates.
+        bookmarks: firebase.firestore.FieldValue.arrayUnion(hikeDocID)
     })
+        // Handle the front-end update to change the icon, providing visual feedback to the user that it has been clicked.
+        .then(function () {
+            console.log("bookmark has been saved for" + hikeDocID);
+            let iconID = 'save-' + hikeDocID;
+            //console.log(iconID);
+            //this is to change the icon of the hike that was saved to "filled"
+            document.getElementById(iconID).innerText = 'bookmark';
+        });
+
 }

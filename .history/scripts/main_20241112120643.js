@@ -248,5 +248,5 @@ function updateBookmark(hikeDocID) {
                 document.getElementById(iconID);
             })
         }
-    })
+    });
 }

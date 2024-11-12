@@ -142,11 +142,10 @@ function writeHikes() {
 function displayCardsDynamically(collection) {
     let cardTemplate = document.getElementById("hikeCardTemplate"); // Retrieve the HTML element with the ID "hikeCardTemplate" and store it in the cardTemplate variable. 
 
-    db.collection(collection)
-        .orderBy("length", "desc")
-        //.limit(2)
-        .get()
+    db.collection(collection).get()   //the collection called "hikes"
         .then(allHikes => {
+        .orderBy("hike_time")
+        .get()
             //var i = 1;  //Optional: if you want to have a unique ID for each hike
             allHikes.forEach(doc => { //iterate thru each doc
                 var title = doc.data().name;       // get value of the "name" key
@@ -165,7 +164,7 @@ function displayCardsDynamically(collection) {
 
                 newcard.querySelector('a').href = "eachHike.html?docID=" + docID;
                 newcard.querySelector('i').id = 'save-' + docID;   //guaranteed to be unique
-                newcard.querySelector('i').onclick = () => updateBookmark(docID);
+                newcard.querySelector('i').onclick = () => saveBookmark(docID);
 
                 currentUser.get().then(userDoc => {
                     //get the user name
@@ -210,43 +209,4 @@ function saveBookmark(hikeDocID) {
             //this is to change the icon of the hike that was saved to "filled"
             document.getElementById(iconID).innerText = 'bookmark';
         });
-}
-
-//--------------------------------------------------------------------------------------
-// This function updates the bookmarks array
-// 1. If it is hollow, makes it solid, then adds this hike to user's "bookmarks" array
-// 2. If it is solid, makes it hollow, then removes this hike from user's "bookmarks" array
-//--------------------------------------------------------------------------------------
-function updateBookmark(hikeDocID) {
-    alert("inside update bookmark");
-    currentUser.get().then(doc => {
-        console.log(doc.data().bookmarks);
-        let currentBookmarks = doc.data().bookmarks;
-
-        if (currentBookmarks && currentBookmarks.includes(hikeDocID)) {
-            console.log(hikeDocID);
-            currentUser.update({
-                bookmarks: firebase.firestore.FieldValue.arrayRemove(hikeDocID)
-            })
-            .then(function() {
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            });
-        } else {
-            currentUser.set({
-                bookmarks: firebase.firestore.FieldValue.arrayUnion(hikeDocID)
-            }, 
-            {
-                merge: true
-            })
-            .then(function(){
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            })
-        }
-    })
 }

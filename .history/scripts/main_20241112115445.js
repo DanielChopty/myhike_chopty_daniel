@@ -218,35 +218,8 @@ function saveBookmark(hikeDocID) {
 // 2. If it is solid, makes it hollow, then removes this hike from user's "bookmarks" array
 //--------------------------------------------------------------------------------------
 function updateBookmark(hikeDocID) {
-    alert("inside update bookmark");
+    alert ("inside update bookmark")
     currentUser.get().then(doc => {
-        console.log(doc.data().bookmarks);
-        let currentBookmarks = doc.data().bookmarks;
+        console.log(doc.data())
 
-        if (currentBookmarks && currentBookmarks.includes(hikeDocID)) {
-            console.log(hikeDocID);
-            currentUser.update({
-                bookmarks: firebase.firestore.FieldValue.arrayRemove(hikeDocID)
-            })
-            .then(function() {
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            });
-        } else {
-            currentUser.set({
-                bookmarks: firebase.firestore.FieldValue.arrayUnion(hikeDocID)
-            }, 
-            {
-                merge: true
-            })
-            .then(function(){
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            })
-        }
-    })
-}
+}}

@@ -237,16 +237,9 @@ function updateBookmark(hikeDocID) {
         } else {
             currentUser.set({
                 bookmarks: firebase.firestore.FieldValue.arrayUnion(hikeDocID)
-            }, 
-            {
+            }, {
                 merge: true
-            })
-            .then(function(){
-                console.log("This bookmark is removed for " + currentUser);
-                let iconID = "save-" + hikeDocID;
-                console.log(iconID);  // Fix case mismatch
-                document.getElementById(iconID);
-            })
+            });
         }
-    })
+    });
 }

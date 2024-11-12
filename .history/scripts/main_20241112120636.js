@@ -240,7 +240,7 @@ function updateBookmark(hikeDocID) {
             }, 
             {
                 merge: true
-            })
+            });
             .then(function(){
                 console.log("This bookmark is removed for " + currentUser);
                 let iconID = "save-" + hikeDocID;
@@ -248,5 +248,5 @@ function updateBookmark(hikeDocID) {
                 document.getElementById(iconID);
             })
         }
-    })
+    });
 }
